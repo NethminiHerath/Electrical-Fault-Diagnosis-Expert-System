@@ -11,7 +11,7 @@ class FaultExpertSystemGUI(ctk.CTk):
         super().__init__()
 
         self.title("Electrical Fault Diagnosis Expert System")
-        self.geometry("1100x760")
+        self.geometry("1250x850")
         self.configure(fg_color="#071A2F")
 
         self.title_label = ctk.CTkLabel(
@@ -20,7 +20,7 @@ class FaultExpertSystemGUI(ctk.CTk):
             font=("Segoe UI", 28, "bold"),
             text_color="#EAF6FF"
         )
-        self.title_label.pack(pady=(25, 5))
+        self.title_label.pack(pady=(22, 5))
 
         self.subtitle_label = ctk.CTkLabel(
             self,
@@ -28,16 +28,16 @@ class FaultExpertSystemGUI(ctk.CTk):
             font=("Segoe UI", 14),
             text_color="#8ECDF8"
         )
-        self.subtitle_label.pack(pady=(0, 20))
+        self.subtitle_label.pack(pady=(0, 15))
 
         self.main_frame = ctk.CTkFrame(self, fg_color="#0B2545", corner_radius=18)
-        self.main_frame.pack(fill="x", padx=30, pady=10)
+        self.main_frame.pack(fill="x", padx=25, pady=10)
 
         self.input_frame = ctk.CTkFrame(self.main_frame, fg_color="#123A63", corner_radius=15)
-        self.input_frame.pack(side="left", fill="both", expand=True, padx=20, pady=20)
+        self.input_frame.pack(side="left", fill="both", expand=True, padx=18, pady=18)
 
         self.option_frame = ctk.CTkFrame(self.main_frame, fg_color="#123A63", corner_radius=15)
-        self.option_frame.pack(side="right", fill="both", expand=True, padx=20, pady=20)
+        self.option_frame.pack(side="right", fill="both", expand=True, padx=18, pady=18)
 
         self.create_inputs()
         self.create_options()
@@ -65,18 +65,18 @@ class FaultExpertSystemGUI(ctk.CTk):
             font=("Segoe UI", 14),
             text_color="#D6EEFF"
         )
-        label.grid(row=row, column=0, padx=20, pady=12, sticky="w")
+        label.grid(row=row, column=0, padx=25, pady=12, sticky="w")
 
         entry = ctk.CTkEntry(
             self.input_frame,
-            width=220,
-            height=38,
+            width=260,
+            height=40,
             fg_color="#071A2F",
             border_color="#4DA3D9",
             text_color="#FFFFFF",
             placeholder_text="Enter value"
         )
-        entry.grid(row=row, column=1, padx=20, pady=12)
+        entry.grid(row=row, column=1, padx=25, pady=12)
 
         return entry
 
@@ -87,7 +87,7 @@ class FaultExpertSystemGUI(ctk.CTk):
             font=("Segoe UI", 18, "bold"),
             text_color="#EAF6FF"
         )
-        heading.pack(pady=(15, 20))
+        heading.pack(pady=(15, 22))
 
         self.maintenance_var = ctk.BooleanVar()
         self.emergency_var = ctk.BooleanVar()
@@ -110,54 +110,54 @@ class FaultExpertSystemGUI(ctk.CTk):
             hover_color="#42A5F5",
             border_color="#8ECDF8"
         )
-        checkbox.pack(anchor="w", padx=45, pady=13)
+        checkbox.pack(anchor="w", padx=55, pady=14)
 
     def create_buttons(self):
         button_frame = ctk.CTkFrame(self, fg_color="#071A2F")
-        button_frame.pack(pady=20)
+        button_frame.pack(pady=18)
 
         self.diagnose_button = ctk.CTkButton(
             button_frame,
             text="Diagnose Fault",
-            width=180,
-            height=42,
+            width=190,
+            height=44,
             corner_radius=12,
             font=("Segoe UI", 15, "bold"),
             fg_color="#1E88E5",
             hover_color="#42A5F5",
             command=self.diagnose
         )
-        self.diagnose_button.grid(row=0, column=0, padx=15)
+        self.diagnose_button.grid(row=0, column=0, padx=18)
 
         self.history_button = ctk.CTkButton(
             button_frame,
             text="View History",
-            width=180,
-            height=42,
+            width=190,
+            height=44,
             corner_radius=12,
             font=("Segoe UI", 15, "bold"),
             fg_color="#1565C0",
             hover_color="#42A5F5",
             command=self.show_history
         )
-        self.history_button.grid(row=0, column=1, padx=15)
+        self.history_button.grid(row=0, column=1, padx=18)
 
         self.clear_button = ctk.CTkButton(
             button_frame,
             text="Clear",
-            width=180,
-            height=42,
+            width=190,
+            height=44,
             corner_radius=12,
             font=("Segoe UI", 15, "bold"),
             fg_color="#0D47A1",
             hover_color="#1976D2",
             command=self.clear_fields
         )
-        self.clear_button.grid(row=0, column=2, padx=15)
+        self.clear_button.grid(row=0, column=2, padx=18)
 
     def create_output_box(self):
         output_frame = ctk.CTkFrame(self, fg_color="#0B2545", corner_radius=18)
-        output_frame.pack(fill="both", expand=True, padx=30, pady=(5, 25))
+        output_frame.pack(fill="both", expand=True, padx=25, pady=(5, 25))
 
         output_label = ctk.CTkLabel(
             output_frame,
@@ -165,20 +165,21 @@ class FaultExpertSystemGUI(ctk.CTk):
             font=("Segoe UI", 18, "bold"),
             text_color="#EAF6FF"
         )
-        output_label.pack(pady=(15, 5))
+        output_label.pack(pady=(15, 8))
 
         self.output_box = ctk.CTkTextbox(
             output_frame,
-            width=980,
-            height=300,
+            width=1150,
+            height=430,
             fg_color="#061426",
             text_color="#EAF6FF",
             border_color="#1E88E5",
             border_width=1,
             corner_radius=12,
-            font=("Consolas", 13)
+            font=("Consolas", 13),
+            wrap="word"
         )
-        self.output_box.pack(padx=20, pady=15, fill="both", expand=True)
+        self.output_box.pack(padx=20, pady=(5, 20), fill="both", expand=True)
 
     def diagnose(self):
         try:
@@ -211,24 +212,35 @@ class FaultExpertSystemGUI(ctk.CTk):
                 explanation=result[3]
             )
 
+            actions = [action.strip() for action in result[2].split(";") if action.strip()]
+            faults = [fault.strip() for fault in result[4].split(",") if fault.strip()]
+
+            fault_text = ""
+            for fault in faults:
+                fault_text += f"• {fault}\n"
+
+            action_text = ""
+            for action in actions:
+                action_text += f"• {action}\n"
+
             self.output_box.delete("1.0", "end")
             self.output_box.insert(
                 "end",
                 f"FINAL DIAGNOSIS\n"
-                f"------------------------------\n"
+                f"==============================\n"
                 f"{result[0]}\n\n"
                 f"SEVERITY\n"
-                f"------------------------------\n"
+                f"==============================\n"
                 f"{result[1]}\n\n"
-                f"RECOMMENDED ACTIONS\n"
-                f"------------------------------\n"
-                f"{result[2]}\n\n"
-                f"RULE EXPLANATION\n"
-                f"------------------------------\n"
-                f"{result[3]}\n\n"
                 f"DETECTED FAULTS\n"
-                f"------------------------------\n"
-                f"{result[4]}"
+                f"==============================\n"
+                f"{fault_text}\n"
+                f"RECOMMENDED ACTIONS\n"
+                f"==============================\n"
+                f"{action_text}\n"
+                f"RULE EXPLANATION\n"
+                f"==============================\n"
+                f"{result[3]}"
             )
 
         except ValueError:
@@ -242,7 +254,7 @@ class FaultExpertSystemGUI(ctk.CTk):
         self.output_box.insert(
             "end",
             "DIAGNOSIS HISTORY\n"
-            "------------------------------\n\n"
+            "==============================\n\n"
         )
 
         if not records:
