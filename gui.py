@@ -369,7 +369,7 @@ class FaultExpertSystemGUI(ctk.CTk):
                 f"Date     : {record[0]}\n"
                 f"Fault    : {record[1]}\n"
                 f"Severity : {history_severity}\n"
-                f"\n"
+            
             )
         self.set_textbox_content(self.explanation_box, history_text)
 
