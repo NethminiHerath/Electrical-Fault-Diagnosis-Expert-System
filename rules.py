@@ -2,6 +2,8 @@ def diagnose_fault(voltage, current, temperature, frequency,
                    maintenance_mode, emergency_load,
                    current_fluctuation, voltage_fluctuation):
 
+    allowed_severities = {"Low", "Medium", "High", "Critical"}
+
     detected_faults = []
     actions = []
     fired_rules = []
@@ -149,13 +151,15 @@ def diagnose_fault(voltage, current, temperature, frequency,
     severity = severity_map[final_fault]
 
     if maintenance_mode and severity != "Critical":
-        severity = "Maintenance"
-        fired_rules.append("MR1: Maintenance rules have priority over non-critical protection rules")
+        fired_rules.append("MR1: Maintenance mode active for non-critical condition")
 
     if emergency_load and severity == "Critical":
         fired_rules.append("MR2: Emergency load protection has highest priority")
 
     fired_rules.append("MR3: Highest priority detected fault is selected as final diagnosis")
+
+    if severity not in allowed_severities:
+        severity = "Medium"
 
     return (
         final_fault,
