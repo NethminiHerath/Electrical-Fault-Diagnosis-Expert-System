@@ -1,13 +1,41 @@
+import os
+
 import mysql.connector
 
 
+def _ensure_optional_reading_columns(conn):
+    """Add newer input columns to databases created by the original schema."""
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE() AND table_name = 'readings'
+    """)
+    columns = {row[0] for row in cursor.fetchall()}
+    missing = []
+    if "current_fluctuation" not in columns:
+        missing.append("ADD COLUMN current_fluctuation BOOLEAN NOT NULL DEFAULT FALSE")
+    if "voltage_fluctuation" not in columns:
+        missing.append("ADD COLUMN voltage_fluctuation BOOLEAN NOT NULL DEFAULT FALSE")
+    if missing:
+        cursor.execute("ALTER TABLE readings " + ", ".join(missing))
+        conn.commit()
+    cursor.close()
+
+
 def get_connection():
-    return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Nethu@9697",
-        database="fault_expert_system"
+    password = os.getenv("RBES_DB_PASSWORD")
+    if not password:
+        raise RuntimeError("RBES_DB_PASSWORD is not set. Configure the database password before starting the application.")
+
+    conn = mysql.connector.connect(
+        host=os.getenv("RBES_DB_HOST", "localhost"),
+        user=os.getenv("RBES_DB_USER", "root"),
+        password=password,
+        database=os.getenv("RBES_DB_NAME", "fault_expert_system")
     )
+    _ensure_optional_reading_columns(conn)
+    return conn
 
 
 def save_diagnosis(
@@ -20,7 +48,9 @@ def save_diagnosis(
     diagnosis,
     severity,
     actions,
-    explanation
+    explanation,
+    current_fluctuation=False,
+    voltage_fluctuation=False
 ):
     conn = get_connection()
     cursor = conn.cursor()
@@ -33,16 +63,20 @@ def save_diagnosis(
             temperature,
             frequency_value,
             maintenance_mode,
-            emergency_load
+            emergency_load,
+            current_fluctuation,
+            voltage_fluctuation
         )
-        VALUES (%s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     """, (
         voltage,
         current,
         temperature,
         frequency,
         maintenance_mode,
-        emergency_load
+        emergency_load,
+        current_fluctuation,
+        voltage_fluctuation
     ))
 
     reading_id = cursor.lastrowid

@@ -319,7 +319,9 @@ class FaultExpertSystemGUI(ctk.CTk):
                 diagnosis=result[0],
                 severity=normalized_severity,
                 actions=result[2],
-                explanation=result[3]
+                explanation=result[3],
+                current_fluctuation=self.current_fluctuation_var.get(),
+                voltage_fluctuation=self.voltage_fluctuation_var.get()
             )
 
             actions = [action.strip() for action in result[2].split(";") if action.strip()]
@@ -351,9 +353,20 @@ class FaultExpertSystemGUI(ctk.CTk):
             self.set_textbox_content(self.faults_box, "")
             self.set_textbox_content(self.actions_box, "")
             self.set_textbox_content(self.explanation_box, "Please enter valid numeric values for all input fields.")
+        except Exception as exc:
+            self.update_summary_card(self.diagnosis_card, "Database Error", "#FF6B6B")
+            self.update_summary_card(self.severity_card, "Not Saved", "#FF6B6B")
+            self.set_textbox_content(self.faults_box, "")
+            self.set_textbox_content(self.actions_box, "")
+            self.set_textbox_content(self.explanation_box, f"The diagnosis could not be saved. Check the database connection.\n\n{exc}")
 
     def show_history(self):
-        records = get_diagnosis_history()
+        try:
+            records = get_diagnosis_history()
+        except Exception as exc:
+            self.show_history_view()
+            self.set_textbox_content(self.explanation_box, f"History could not be loaded. Check the database connection.\n\n{exc}")
+            return
 
         self.show_history_view()
 

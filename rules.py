@@ -8,6 +8,14 @@ def diagnose_fault(voltage, current, temperature, frequency,
     actions = []
     fired_rules = []
 
+    def resolve_actions(candidate_actions):
+        """Remove contradictory automatic-trip actions during maintenance."""
+        resolved = list(dict.fromkeys(candidate_actions))
+        if maintenance_mode and current > 15:
+            suppressed = {"Disconnect load immediately", "Trip breaker"}
+            resolved = [action for action in resolved if action not in suppressed]
+        return resolved
+
     fault_priority = {
         "Short Circuit Suspicion": 1,
         "Critical Overtemperature": 2,
@@ -164,7 +172,7 @@ def diagnose_fault(voltage, current, temperature, frequency,
     return (
         final_fault,
         severity,
-        "; ".join(dict.fromkeys(actions)),
+        "; ".join(resolve_actions(actions)),
         "\n".join(fired_rules),
         ", ".join(detected_faults)
     )
