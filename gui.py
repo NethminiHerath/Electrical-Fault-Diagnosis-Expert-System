@@ -164,6 +164,23 @@ class FaultExpertSystemGUI(ctk.CTk):
         )
         output_label.pack(pady=(15, 10))
 
+        search_frame = ctk.CTkFrame(self.output_frame, fg_color="#0B2545")
+        search_frame.pack(fill="x", padx=20, pady=(0, 10))
+        self.history_search_entry = ctk.CTkEntry(
+            search_frame,
+            width=320,
+            height=36,
+            placeholder_text="Search fault, severity, or action"
+        )
+        self.history_search_entry.pack(side="left", padx=(0, 10))
+        self.search_button = ctk.CTkButton(
+            search_frame,
+            text="Search History",
+            width=150,
+            command=self.show_history
+        )
+        self.search_button.pack(side="left")
+
         self.summary_frame = ctk.CTkFrame(self.output_frame, fg_color="#0E3158", corner_radius=14)
         self.summary_frame.pack(fill="x", padx=20, pady=(0, 12))
 
@@ -362,7 +379,8 @@ class FaultExpertSystemGUI(ctk.CTk):
 
     def show_history(self):
         try:
-            records = get_diagnosis_history()
+            search_term = self.history_search_entry.get().strip()
+            records = get_diagnosis_history(search_term or None)
         except Exception as exc:
             self.show_history_view()
             self.set_textbox_content(self.explanation_box, f"History could not be loaded. Check the database connection.\n\n{exc}")
@@ -393,6 +411,7 @@ class FaultExpertSystemGUI(ctk.CTk):
         self.current_entry.delete(0, "end")
         self.temperature_entry.delete(0, "end")
         self.frequency_entry.delete(0, "end")
+        self.history_search_entry.delete(0, "end")
 
         self.maintenance_var.set(False)
         self.emergency_var.set(False)

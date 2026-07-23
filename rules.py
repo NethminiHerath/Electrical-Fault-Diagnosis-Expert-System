@@ -7,6 +7,33 @@ def diagnose_fault(voltage, current, temperature, frequency,
     detected_faults = []
     actions = []
     fired_rules = []
+    facts = set()
+
+    # Initial facts are loaded into working memory before rule evaluation.
+    if voltage > 250:
+        facts.add("overvoltage_condition")
+    if voltage < 200:
+        facts.add("undervoltage_condition")
+    if current > 15:
+        facts.add("overcurrent_condition")
+    if temperature > 80:
+        facts.add("overtemperature_condition")
+    if temperature > 75:
+        facts.add("high_temperature_condition")
+    if temperature > 85:
+        facts.add("very_high_temperature_condition")
+    if current <= 15:
+        facts.add("normal_current_condition")
+    if 48 <= frequency <= 52:
+        facts.add("normal_frequency_condition")
+    if current_fluctuation:
+        facts.add("current_fluctuation_condition")
+    if voltage_fluctuation:
+        facts.add("voltage_fluctuation_condition")
+    if maintenance_mode:
+        facts.add("maintenance_mode_condition")
+    if emergency_load:
+        facts.add("emergency_load_condition")
 
     def resolve_actions(candidate_actions):
         """Remove contradictory automatic-trip actions during maintenance."""
@@ -53,6 +80,7 @@ def diagnose_fault(voltage, current, temperature, frequency,
     def add_fault(fault):
         if fault not in detected_faults:
             detected_faults.append(fault)
+        facts.add(fault)
 
     if voltage > 250:
         add_fault("Overvoltage")
@@ -64,7 +92,7 @@ def diagnose_fault(voltage, current, temperature, frequency,
         actions.append("Reduce load and check supply input")
         fired_rules.append("R2: IF voltage < 200 THEN undervoltage")
 
-    if current > 15:
+    if "overcurrent_condition" in facts:
         add_fault("Overcurrent")
         actions.append("Disconnect load immediately")
         fired_rules.append("R3: IF current > 15 THEN overcurrent")
@@ -89,26 +117,26 @@ def diagnose_fault(voltage, current, temperature, frequency,
         actions.append("Isolate sensitive equipment")
         fired_rules.append("R7: IF voltage > 270 THEN extreme overvoltage")
 
-    if current > 15:
+    if "overcurrent_condition" in facts:
         actions.append("Check temperature after overcurrent")
         fired_rules.append("R8: IF overcurrent THEN check temperature")
 
-    if current > 15 and temperature > 80:
+    if "overcurrent_condition" in facts and "overtemperature_condition" in facts:
         add_fault("Severe Overload")
         actions.append("Schedule maintenance inspection")
         fired_rules.append("R9: IF overcurrent AND overheating THEN severe overload")
 
-    if current_fluctuation and temperature > 75:
+    if "current_fluctuation_condition" in facts and "high_temperature_condition" in facts:
         add_fault("Possible Motor Winding Fault")
         actions.append("Inspect motor winding")
         fired_rules.append("R10: IF current fluctuates AND temperature high THEN motor winding fault")
 
-    if voltage_fluctuation and 48 <= frequency <= 52:
+    if "voltage_fluctuation_condition" in facts and "normal_frequency_condition" in facts:
         add_fault("Possible Loose Connection")
         actions.append("Inspect wiring terminals")
         fired_rules.append("R11: IF voltage fluctuates AND frequency normal THEN loose connection")
 
-    if temperature > 85 and current <= 15:
+    if "very_high_temperature_condition" in facts and "normal_current_condition" in facts:
         add_fault("Possible Cooling Failure")
         actions.append("Check fan or ventilation")
         fired_rules.append("R12: IF temperature high AND current normal THEN cooling failure")
@@ -128,27 +156,27 @@ def diagnose_fault(voltage, current, temperature, frequency,
         actions.append("Check main supply")
         fired_rules.append("R15: IF voltage < 180 AND current < 5 THEN supply failure")
 
-    if current > 15:
+    if "overcurrent_condition" in facts:
         actions.append("Trip breaker")
         fired_rules.append("R16: IF overcurrent THEN trip breaker")
 
-    if current > 15 and maintenance_mode:
+    if "overcurrent_condition" in facts and "maintenance_mode_condition" in facts:
         actions.append("Do not trip automatically during maintenance")
         fired_rules.append("R17: IF overcurrent AND maintenance mode THEN do not trip automatically")
 
-    if voltage > 250 and emergency_load:
+    if "overvoltage_condition" in facts and "emergency_load_condition" in facts:
         actions.append("Keep emergency load active")
         fired_rules.append("R18: IF overvoltage AND emergency load THEN protect emergency load")
 
-    if current > 15 and emergency_load:
+    if "overcurrent_condition" in facts and "emergency_load_condition" in facts:
         actions.append("Isolate non-critical loads first")
         fired_rules.append("R19: IF overcurrent AND emergency load THEN isolate non-critical loads")
 
-    if temperature > 80 and emergency_load:
+    if "overtemperature_condition" in facts and "emergency_load_condition" in facts:
         actions.append("Keep emergency cooling active")
         fired_rules.append("R20: IF overheating AND emergency load THEN keep emergency cooling active")
 
-    if voltage < 200 and maintenance_mode:
+    if "undervoltage_condition" in facts and "maintenance_mode_condition" in facts:
         actions.append("Record undervoltage as maintenance observation")
         fired_rules.append("R21: IF undervoltage AND maintenance mode THEN record observation")
 

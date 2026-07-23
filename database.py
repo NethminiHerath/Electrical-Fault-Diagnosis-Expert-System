@@ -104,18 +104,20 @@ def save_diagnosis(
     conn.close()
 
 
-def get_diagnosis_history():
+def get_diagnosis_history(search_term=None):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT
-            created_at,
-            fault_type,
-            severity
+    query = """
+        SELECT created_at, fault_type, severity
         FROM diagnosis_history
-        ORDER BY created_at DESC
-    """)
+    """
+    if search_term:
+        query += " WHERE fault_type LIKE %s OR severity LIKE %s OR action_taken LIKE %s"
+        value = f"%{search_term}%"
+        cursor.execute(query + " ORDER BY created_at DESC", (value, value, value))
+    else:
+        cursor.execute(query + " ORDER BY created_at DESC")
 
     rows = cursor.fetchall()
 
