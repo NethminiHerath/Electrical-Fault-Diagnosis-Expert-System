@@ -200,14 +200,14 @@ class FaultExpertSystemGUI(ctk.CTk):
             "Final Diagnosis",
             ""
         )
-        self.diagnosis_card.grid(row=0, column=0, sticky="nsew", padx=12, pady=12)
+        self.diagnosis_card.grid(row=0, column=0, sticky="nsew", padx=(0, 12), pady=12)
 
         self.severity_card = self.create_summary_card(
             self.summary_frame,
             "Severity",
             ""
         )
-        self.severity_card.grid(row=0, column=1, sticky="nsew", padx=12, pady=12)
+        self.severity_card.grid(row=0, column=1, sticky="nsew", padx=(12, 0), pady=12)
 
         self.summary_frame.grid_columnconfigure(0, weight=1)
         self.summary_frame.grid_columnconfigure(1, weight=1)
