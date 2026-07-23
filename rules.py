@@ -12,6 +12,8 @@ def diagnose_fault(voltage, current, temperature, frequency,
     # Initial facts are loaded into working memory before rule evaluation.
     if voltage > 250:
         facts.add("overvoltage_condition")
+    if voltage > 270:
+        facts.add("extreme_overvoltage_condition")
     if voltage < 200:
         facts.add("undervoltage_condition")
     if current > 15:
@@ -22,10 +24,20 @@ def diagnose_fault(voltage, current, temperature, frequency,
         facts.add("high_temperature_condition")
     if temperature > 85:
         facts.add("very_high_temperature_condition")
+    if temperature > 90:
+        facts.add("critical_overtemperature_condition")
     if current <= 15:
         facts.add("normal_current_condition")
     if 48 <= frequency <= 52:
         facts.add("normal_frequency_condition")
+    if frequency < 48 or frequency > 52:
+        facts.add("frequency_abnormality_condition")
+    if current > 25 and voltage < 180:
+        facts.add("short_circuit_condition")
+    if current > 20 and temperature > 85:
+        facts.add("equipment_overload_condition")
+    if voltage < 180 and current < 5:
+        facts.add("supply_failure_condition")
     if current_fluctuation:
         facts.add("current_fluctuation_condition")
     if voltage_fluctuation:
@@ -82,40 +94,40 @@ def diagnose_fault(voltage, current, temperature, frequency,
             detected_faults.append(fault)
         facts.add(fault)
 
-    if voltage > 250:
+    if "overvoltage_condition" in facts:
         add_fault("Overvoltage")
         actions.append("Inspect voltage stabilizer")
-        fired_rules.append("R1: IF voltage > 250 THEN overvoltage")
+        fired_rules.append("R1: IF overvoltage condition THEN overvoltage")
 
-    if voltage < 200:
+    if "undervoltage_condition" in facts:
         add_fault("Undervoltage")
         actions.append("Reduce load and check supply input")
-        fired_rules.append("R2: IF voltage < 200 THEN undervoltage")
+        fired_rules.append("R2: IF undervoltage condition THEN undervoltage")
 
     if "overcurrent_condition" in facts:
         add_fault("Overcurrent")
         actions.append("Disconnect load immediately")
-        fired_rules.append("R3: IF current > 15 THEN overcurrent")
+        fired_rules.append("R3: IF overcurrent condition THEN overcurrent")
 
-    if temperature > 80:
+    if "overtemperature_condition" in facts:
         add_fault("Overtemperature")
         actions.append("Inspect cooling system")
-        fired_rules.append("R4: IF temperature > 80 THEN overheating")
+        fired_rules.append("R4: IF overtemperature condition THEN overheating")
 
-    if frequency < 48 or frequency > 52:
+    if "frequency_abnormality_condition" in facts:
         add_fault("Frequency Abnormality")
         actions.append("Check generator or power source")
-        fired_rules.append("R5: IF frequency outside 48-52Hz THEN frequency fault")
+        fired_rules.append("R5: IF frequency abnormality condition THEN frequency fault")
 
-    if temperature > 90:
+    if "critical_overtemperature_condition" in facts:
         add_fault("Critical Overtemperature")
         actions.append("Emergency shutdown")
-        fired_rules.append("R6: IF temperature > 90 THEN emergency shutdown")
+        fired_rules.append("R6: IF critical overtemperature condition THEN emergency shutdown")
 
-    if voltage > 270:
+    if "extreme_overvoltage_condition" in facts:
         add_fault("Extreme Overvoltage")
         actions.append("Isolate sensitive equipment")
-        fired_rules.append("R7: IF voltage > 270 THEN extreme overvoltage")
+        fired_rules.append("R7: IF extreme overvoltage condition THEN extreme overvoltage")
 
     if "overcurrent_condition" in facts:
         actions.append("Check temperature after overcurrent")
@@ -141,20 +153,20 @@ def diagnose_fault(voltage, current, temperature, frequency,
         actions.append("Check fan or ventilation")
         fired_rules.append("R12: IF temperature high AND current normal THEN cooling failure")
 
-    if current > 25 and voltage < 180:
+    if "short_circuit_condition" in facts:
         add_fault("Short Circuit Suspicion")
         actions.append("Trip breaker immediately")
-        fired_rules.append("R13: IF current > 25 AND voltage < 180 THEN short circuit")
+        fired_rules.append("R13: IF short circuit condition THEN short circuit")
 
-    if current > 20 and temperature > 85:
+    if "equipment_overload_condition" in facts:
         add_fault("Equipment Overload")
         actions.append("Remove excess load")
-        fired_rules.append("R14: IF current > 20 AND temperature > 85 THEN equipment overload")
+        fired_rules.append("R14: IF equipment overload condition THEN equipment overload")
 
-    if voltage < 180 and current < 5:
+    if "supply_failure_condition" in facts:
         add_fault("Supply Failure Suspicion")
         actions.append("Check main supply")
-        fired_rules.append("R15: IF voltage < 180 AND current < 5 THEN supply failure")
+        fired_rules.append("R15: IF supply failure condition THEN supply failure")
 
     if "overcurrent_condition" in facts:
         actions.append("Trip breaker")
