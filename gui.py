@@ -171,22 +171,26 @@ class FaultExpertSystemGUI(ctk.CTk):
         )
         output_label.pack(pady=(15, 10))
 
-        search_frame = ctk.CTkFrame(self.output_frame, fg_color="#0B2545")
+        search_frame = ctk.CTkFrame(self.output_frame, fg_color="#0E3158", corner_radius=12)
         search_frame.pack(fill="x", padx=20, pady=(0, 10))
         self.history_search_entry = ctk.CTkEntry(
             search_frame,
-            width=320,
+            width=520,
             height=36,
-            placeholder_text="Search fault, severity, or action"
+            placeholder_text="Search fault, severity, or action",
+            fg_color="#071A2F",
+            border_color="#4DA3D9",
+            text_color="#FFFFFF",
+            placeholder_text_color="#8ECDF8"
         )
-        self.history_search_entry.pack(side="left", padx=(0, 10))
+        self.history_search_entry.pack(side="left", fill="x", expand=True, padx=(12, 10), pady=12)
         self.search_button = ctk.CTkButton(
             search_frame,
             text="Search History",
             width=150,
             command=self.show_history
         )
-        self.search_button.pack(side="left")
+        self.search_button.pack(side="left", padx=(0, 12), pady=12)
 
         self.summary_frame = ctk.CTkFrame(self.output_frame, fg_color="#0E3158", corner_radius=14)
         self.summary_frame.pack(fill="x", padx=20, pady=(0, 12))
@@ -215,13 +219,13 @@ class FaultExpertSystemGUI(ctk.CTk):
             self.details_frame,
             "Detected Faults"
         )
-        self.faults_card.grid(row=0, column=0, sticky="nsew", padx=(0, 10), pady=(0, 12))
+        self.faults_card.grid(row=0, column=0, sticky="nsew", padx=(0, 12), pady=(0, 12))
 
         self.actions_card, self.actions_box = self.create_text_card(
             self.details_frame,
             "Recommended Actions"
         )
-        self.actions_card.grid(row=0, column=1, sticky="nsew", padx=(10, 0), pady=(0, 12))
+        self.actions_card.grid(row=0, column=1, sticky="nsew", padx=(12, 0), pady=(0, 12))
 
         self.explanation_card, self.explanation_box = self.create_text_card(
             self.details_frame,
@@ -286,8 +290,8 @@ class FaultExpertSystemGUI(ctk.CTk):
             self.summary_frame.pack(fill="x", padx=20, pady=(0, 12))
 
         self.explanation_card.title_label.configure(text=self.explanation_card.default_title)
-        self.faults_card.grid(row=0, column=0, sticky="nsew", padx=(0, 10), pady=(0, 12))
-        self.actions_card.grid(row=0, column=1, sticky="nsew", padx=(10, 0), pady=(0, 12))
+        self.faults_card.grid(row=0, column=0, sticky="nsew", padx=(0, 12), pady=(0, 12))
+        self.actions_card.grid(row=0, column=1, sticky="nsew", padx=(12, 0), pady=(0, 12))
         self.explanation_card.grid(row=1, column=0, columnspan=2, sticky="nsew", pady=(0, 0))
 
     def show_history_view(self):
