@@ -14,8 +14,15 @@ class FaultExpertSystemGUI(ctk.CTk):
         self.geometry("1280x980")
         self.configure(fg_color="#071A2F")
 
-        self.title_label = ctk.CTkLabel(
+        self.page_frame = ctk.CTkScrollableFrame(
             self,
+            fg_color="#071A2F",
+            corner_radius=0
+        )
+        self.page_frame.pack(fill="both", expand=True)
+
+        self.title_label = ctk.CTkLabel(
+            self.page_frame,
             text="Electrical Fault Diagnosis Expert System",
             font=("Segoe UI", 28, "bold"),
             text_color="#EAF6FF"
@@ -30,7 +37,7 @@ class FaultExpertSystemGUI(ctk.CTk):
         )
         self.subtitle_label.pack(pady=(0, 12))
 
-        self.main_frame = ctk.CTkFrame(self, fg_color="#0B2545", corner_radius=18)
+        self.main_frame = ctk.CTkFrame(self.page_frame, fg_color="#0B2545", corner_radius=18)
         self.main_frame.pack(fill="x", padx=25, pady=8)
 
         self.input_frame = ctk.CTkFrame(self.main_frame, fg_color="#123A63", corner_radius=15)
@@ -116,7 +123,7 @@ class FaultExpertSystemGUI(ctk.CTk):
         checkbox.pack(anchor="w", padx=55, pady=14)
 
     def create_buttons(self):
-        button_frame = ctk.CTkFrame(self, fg_color="#071A2F")
+        button_frame = ctk.CTkFrame(self.page_frame, fg_color="#071A2F")
         button_frame.pack(pady=15)
 
         button_style = {
@@ -153,8 +160,8 @@ class FaultExpertSystemGUI(ctk.CTk):
         self.clear_button.grid(row=0, column=2, padx=18)
 
     def create_output_area(self):
-        self.output_frame = ctk.CTkScrollableFrame(self, fg_color="#0B2545", corner_radius=18)
-        self.output_frame.pack(fill="both", expand=True, padx=25, pady=(5, 25))
+        self.output_frame = ctk.CTkFrame(self.page_frame, fg_color="#0B2545", corner_radius=18)
+        self.output_frame.pack(fill="x", padx=25, pady=(5, 25))
 
         output_label = ctk.CTkLabel(
             self.output_frame,
