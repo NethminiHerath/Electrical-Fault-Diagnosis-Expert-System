@@ -11,7 +11,7 @@ class FaultExpertSystemGUI(ctk.CTk):
         super().__init__()
 
         self.title("Electrical Fault Diagnosis Expert System")
-        self.geometry("1280x920")
+        self.geometry("1280x980")
         self.configure(fg_color="#071A2F")
 
         self.title_label = ctk.CTkLabel(
