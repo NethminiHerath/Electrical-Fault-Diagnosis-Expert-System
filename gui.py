@@ -209,8 +209,8 @@ class FaultExpertSystemGUI(ctk.CTk):
         )
         self.severity_card.grid(row=0, column=1, sticky="nsew", padx=(12, 0), pady=12)
 
-        self.summary_frame.grid_columnconfigure(0, weight=1)
-        self.summary_frame.grid_columnconfigure(1, weight=1)
+        self.summary_frame.grid_columnconfigure(0, weight=1, uniform="output_columns")
+        self.summary_frame.grid_columnconfigure(1, weight=1, uniform="output_columns")
 
         self.details_frame = ctk.CTkFrame(self.output_frame, fg_color="#0B2545")
         self.details_frame.pack(fill="both", expand=True, padx=20, pady=(0, 20))
@@ -233,8 +233,8 @@ class FaultExpertSystemGUI(ctk.CTk):
         )
         self.explanation_card.grid(row=1, column=0, columnspan=2, sticky="nsew", pady=(0, 0))
 
-        self.details_frame.grid_columnconfigure(0, weight=1)
-        self.details_frame.grid_columnconfigure(1, weight=1)
+        self.details_frame.grid_columnconfigure(0, weight=1, uniform="output_columns")
+        self.details_frame.grid_columnconfigure(1, weight=1, uniform="output_columns")
         self.details_frame.grid_rowconfigure(0, weight=1)
         self.details_frame.grid_rowconfigure(1, weight=2)
 
@@ -287,7 +287,12 @@ class FaultExpertSystemGUI(ctk.CTk):
 
     def show_diagnosis_view(self):
         if not self.summary_frame.winfo_manager():
-            self.summary_frame.pack(fill="x", padx=20, pady=(0, 12))
+            self.summary_frame.pack(
+                fill="x",
+                padx=20,
+                pady=(0, 12),
+                before=self.details_frame
+            )
 
         self.explanation_card.title_label.configure(text=self.explanation_card.default_title)
         self.faults_card.grid(row=0, column=0, sticky="nsew", padx=(0, 12), pady=(0, 12))
