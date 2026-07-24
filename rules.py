@@ -94,6 +94,7 @@ def diagnose_fault(voltage, current, temperature, frequency,
             detected_faults.append(fault)
         facts.add(fault)
 
+# Relational and Recommendation Rules
     if "overvoltage_condition" in facts:
         add_fault("Overvoltage")
         actions.append("Inspect voltage stabilizer")
@@ -119,6 +120,7 @@ def diagnose_fault(voltage, current, temperature, frequency,
         actions.append("Check generator or power source")
         fired_rules.append("R5: IF frequency abnormality condition THEN frequency fault")
 
+# Directive Rule
     if "critical_overtemperature_condition" in facts:
         add_fault("Critical Overtemperature")
         actions.append("Emergency shutdown")
@@ -138,6 +140,7 @@ def diagnose_fault(voltage, current, temperature, frequency,
         actions.append("Schedule maintenance inspection")
         fired_rules.append("R9: IF overcurrent AND overheating THEN severe overload")
 
+# Heuristic Rules
     if "current_fluctuation_condition" in facts and "high_temperature_condition" in facts:
         add_fault("Possible Motor Winding Fault")
         actions.append("Inspect motor winding")
@@ -184,6 +187,7 @@ def diagnose_fault(voltage, current, temperature, frequency,
         actions.append("Isolate non-critical loads first")
         fired_rules.append("R19: IF overcurrent AND emergency load THEN isolate non-critical loads")
 
+# Strategy Rules
     if "overtemperature_condition" in facts and "emergency_load_condition" in facts:
         actions.append("Keep emergency cooling active")
         fired_rules.append("R20: IF overheating AND emergency load THEN keep emergency cooling active")
